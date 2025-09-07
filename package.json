@@ -19,12 +19,12 @@
     "@frontegg/react": "^3.0.0"
   },
   "devDependencies": {
-    "vite": "^5.0.0",
+    "vite": "^4.3.9",
+    "@vitejs/plugin-react": "^3.1.0",
     "typescript": "^3.9.7",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "eslint": "^8.0.0",
-    "eslint-plugin-react": "^7.32.0",
-    "@vitejs/plugin-react": "^3.0.0"
+    "eslint-plugin-react": "^7.32.0"
   }
 }
