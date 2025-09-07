@@ -14,11 +14,13 @@ const authOptions = {
 };
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <FronteggProvider
-    contextOptions={contextOptions}
-    hostedLoginBox={true}
-    authOptions={authOptions}
-  >
-    <App />
-  </FronteggProvider>
+  <React.StrictMode>
+    <FronteggProvider
+      contextOptions={contextOptions}
+      hostedLoginBox={true}
+      authOptions={authOptions}
+    >
+      <App />
+    </FronteggProvider>
+  </React.StrictMode>
 );
