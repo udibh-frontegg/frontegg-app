@@ -1,6 +1,5 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.jsx';
+import App from './App.jsx'
 import './index.css';
 import { FronteggProvider } from '@frontegg/react';
 
@@ -10,11 +9,18 @@ const contextOptions = {
   appId: 'd52557bd-5aa0-4adb-a090-4afd4c9284f4'
 };
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const authOptions = {
+  keepSessionAlive: true // Uncomment this in order to maintain the session alive
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+
   <FronteggProvider
     contextOptions={contextOptions}
     hostedLoginBox={true}
+    authOptions={authOptions}
   >
     <App />
   </FronteggProvider>
-);
+  , document.getElementById('root')); 
