@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react"; // <-- make sure React is imported
 import { useAuth, useLoginWithRedirect, ContextHolder } from "@frontegg/react";
 
 function App() {
