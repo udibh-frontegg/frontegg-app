@@ -1,47 +1,25 @@
-import React, { useEffect } from "react"; // <-- make sure React is imported
-import { useAuth, useLoginWithRedirect, ContextHolder } from "@frontegg/react";
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx'
+import { FronteggProvider } from '@frontegg/react';
 
-function App() {
-  const { user, isAuthenticated } = useAuth();
-  const loginWithRedirect = useLoginWithRedirect();
+const contextOptions = {
+  baseUrl: 'https://app-grkb95gt40d2.frontegg.com',
+  clientId: '8a6a896a-f550-4853-97a2-5d79969cd9d3',
+  appId: 'd52557bd-5aa0-4adb-a090-4afd4c9284f4'
+};
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      loginWithRedirect();
-    }
-  }, [isAuthenticated, loginWithRedirect]);
+const authOptions = {
+  keepSessionAlive: true // Uncomment this in order to maintain the session alive
+};
 
-  const logout = () => {
-    const baseUrl = ContextHolder.getContext().baseUrl;
-    window.location.href = `${baseUrl}/oauth/logout?post_logout_redirect_uri=${window.location.href}`;
-  };
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
 
-  return (
-    <div className="App">
-      {isAuthenticated ? (
-        <div>
-          <div>
-            <img src={user?.profilePictureUrl} alt={user?.name} />
-          </div>
-          <div>
-            <span>Logged in as: {user?.name}</span>
-          </div>
-          <div>
-            <button onClick={() => alert(user.accessToken)}>
-              What is my access token?
-            </button>
-          </div>
-          <div>
-            <button onClick={logout}>Click to logout</button>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <button onClick={loginWithRedirect}>Click me to login</button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default App;
+  <FronteggProvider
+    contextOptions={contextOptions}
+    hostedLoginBox={true}
+    authOptions={authOptions}
+  >
+    <App />
+  </FronteggProvider>
+  , document.getElementById('root')); 
