@@ -1,20 +1,25 @@
-import React, { useEffect } from "react"; // <-- make sure React is imported
+import React, { useEffect } from "react";
 import { useAuth, useLoginWithRedirect, ContextHolder } from "@frontegg/react";
 
 function App() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const loginWithRedirect = useLoginWithRedirect();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    // Only try to redirect once loading is complete
+    if (!isLoading && !isAuthenticated) {
       loginWithRedirect();
     }
-  }, [isAuthenticated, loginWithRedirect]);
+  }, [isLoading, isAuthenticated, loginWithRedirect]);
 
   const logout = () => {
     const baseUrl = ContextHolder.getContext().baseUrl;
     window.location.href = `${baseUrl}/oauth/logout?post_logout_redirect_uri=${window.location.href}`;
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>; // prevents flashing or loops while SDK initializes
+  }
 
   return (
     <div className="App">
