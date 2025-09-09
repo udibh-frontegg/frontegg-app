@@ -17,7 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <FronteggProvider
       contextOptions={contextOptions}
-      hostedLoginBox={false}
+      hostedLoginBox={true}
       authOptions={authOptions}
     >
       <App />
