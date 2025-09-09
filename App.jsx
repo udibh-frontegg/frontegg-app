@@ -1,5 +1,4 @@
-import './App.jsx';
-// import { useEffect } from 'react';
+import React, { useEffect } from "react"; // <-- make sure React is imported
 import { useAuth, useLoginWithRedirect, ContextHolder } from "@frontegg/react";
 
 function App() {
@@ -18,7 +17,6 @@ function App() {
   };
 
   return (
-
     <div className="App">
       {isAuthenticated ? (
         <div>
@@ -34,12 +32,12 @@ function App() {
             </button>
           </div>
           <div>
-            <button onClick={() => logout()}>Click to logout</button>
+            <button onClick={logout}>Click to logout</button>
           </div>
         </div>
       ) : (
         <div>
-          <button onClick={() => loginWithRedirect()}>Click me to login</button>
+          <button onClick={loginWithRedirect}>Click me to login</button>
         </div>
       )}
     </div>
