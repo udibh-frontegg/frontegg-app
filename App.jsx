@@ -1,58 +1,47 @@
-import React from "react";
-import { useAuth, useLoginWithRedirect, useLogout } from "@frontegg/react";
+import './App.jsx';
+// import { useEffect } from 'react';
+import { useAuth, useLoginWithRedirect, ContextHolder } from "@frontegg/react";
 
 function App() {
   const { user, isAuthenticated } = useAuth();
   const loginWithRedirect = useLoginWithRedirect();
-  const logout = useLogout();
 
-  if (!isAuthenticated) {
-    return (
-      <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
-        <h1>Welcome to Frontegg App</h1>
-        <p>You are not logged in.</p>
-        <button
-          onClick={() => loginWithRedirect()}
-          style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            borderRadius: "8px",
-            border: "none",
-            background: "#4f46e5",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          Login
-        </button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      loginWithRedirect();
+    }
+  }, [isAuthenticated, loginWithRedirect]);
+
+  const logout = () => {
+    const baseUrl = ContextHolder.getContext().baseUrl;
+    window.location.href = `${baseUrl}/oauth/logout?post_logout_redirect_uri=${window.location.href}`;
+  };
 
   return (
-    <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
-      <h1>Welcome {user?.name || user?.email} 🎉</h1>
-      <p>You are logged in!</p>
 
-      <div style={{ marginTop: "1rem" }}>
-        <h3>User Info</h3>
-        <pre>{JSON.stringify(user, null, 2)}</pre>
-      </div>
-
-      <button
-        onClick={() => logout()}
-        style={{
-          marginTop: "2rem",
-          padding: "0.5rem 1rem",
-          borderRadius: "8px",
-          border: "none",
-          background: "#ef4444",
-          color: "white",
-          cursor: "pointer",
-        }}
-      >
-        Logout
-      </button>
+    <div className="App">
+      {isAuthenticated ? (
+        <div>
+          <div>
+            <img src={user?.profilePictureUrl} alt={user?.name} />
+          </div>
+          <div>
+            <span>Logged in as: {user?.name}</span>
+          </div>
+          <div>
+            <button onClick={() => alert(user.accessToken)}>
+              What is my access token?
+            </button>
+          </div>
+          <div>
+            <button onClick={() => logout()}>Click to logout</button>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <button onClick={() => loginWithRedirect()}>Click me to login</button>
+        </div>
+      )}
     </div>
   );
 }
