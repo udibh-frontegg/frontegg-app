@@ -1,25 +1,60 @@
-import ReactDOM from 'react-dom/client';
-import App from './App.jsx'
-import { FronteggProvider } from '@frontegg/react';
+import React from "react";
+import { useAuth, useLoginWithRedirect, useLogout } from "@frontegg/react";
 
-const contextOptions = {
-  baseUrl: 'https://app-grkb95gt40d2.frontegg.com',
-  clientId: '8a6a896a-f550-4853-97a2-5d79969cd9d3',
-  appId: 'd52557bd-5aa0-4adb-a090-4afd4c9284f4'
-};
+function App() {
+  const { user, isAuthenticated } = useAuth();
+  const loginWithRedirect = useLoginWithRedirect();
+  const logout = useLogout();
 
-const authOptions = {
-  keepSessionAlive: true // Uncomment this in order to maintain the session alive
-};
+  if (!isAuthenticated) {
+    return (
+      <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
+        <h1>Welcome to Frontegg App</h1>
+        <p>You are not logged in.</p>
+        <button
+          onClick={() => loginWithRedirect()}
+          style={{
+            marginTop: "1rem",
+            padding: "0.5rem 1rem",
+            borderRadius: "8px",
+            border: "none",
+            background: "#4f46e5",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          Login
+        </button>
+      </div>
+    );
+  }
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+  return (
+    <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
+      <h1>Welcome {user?.name || user?.email} 🎉</h1>
+      <p>You are logged in!</p>
 
-  <FronteggProvider
-    contextOptions={contextOptions}
-    hostedLoginBox={true}
-    authOptions={authOptions}
-  >
-    <App />
-  </FronteggProvider>
-  , document.getElementById('root')); 
+      <div style={{ marginTop: "1rem" }}>
+        <h3>User Info</h3>
+        <pre>{JSON.stringify(user, null, 2)}</pre>
+      </div>
+
+      <button
+        onClick={() => logout()}
+        style={{
+          marginTop: "2rem",
+          padding: "0.5rem 1rem",
+          borderRadius: "8px",
+          border: "none",
+          background: "#ef4444",
+          color: "white",
+          cursor: "pointer",
+        }}
+      >
+        Logout
+      </button>
+    </div>
+  );
+}
+
+export default App;
