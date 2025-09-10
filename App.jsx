@@ -1,35 +1,50 @@
-import React, { useState } from "react";
-import { useAuth, useAuthActions } from "@frontegg/react";
+import React, { useEffect } from "react";
+import { useAuth, useLoginWithRedirect, ContextHolder, AdminPortal } from "@frontegg/react";
 
 function App() {
-  const { user } = useAuth();
-  const { switchTenant } = useAuthActions();
-  const [selectedTenant, setSelectedTenant] = useState(user?.tenantId || "");
+  const { user, isAuthenticated } = useAuth();
+  const loginWithRedirect = useLoginWithRedirect();
 
-  const handleSwitchTenant = (tenantId) => {
-    setSelectedTenant(tenantId);
-    switchTenant({ tenantId }); // you can also use silentReload: true if needed
+  useEffect(() => {
+    if (!isAuthenticated) {
+      loginWithRedirect();
+    }
+  }, [isAuthenticated, loginWithRedirect]);
+
+  const logout = () => {
+    const baseUrl = ContextHolder.getContext().baseUrl;
+    window.location.href = `${baseUrl}/oauth/logout?post_logout_redirect_uri=${window.location.href}`;
   };
 
-  if (!user) {
-    return <div>Loading...</div>;
-  }
+  const openAdminPortal = () => {
+    AdminPortal.show(); // opens the admin portal modal
+  };
 
   return (
-    <div>
-      <h2>Welcome, {user.name}</h2>
-      <label htmlFor="tenant-select">Select Active Tenant:</label>
-      <select
-        id="tenant-select"
-        value={selectedTenant}
-        onChange={(e) => handleSwitchTenant(e.target.value)}
-      >
-        {user.tenantIds?.map((tenant) => (
-          <option key={tenant} value={tenant}>
-            {tenant}
-          </option>
-        ))}
-      </select>
+    <div className="App">
+      {isAuthenticated ? (
+        <div>
+          <div>
+            <img src={user?.profilePictureUrl} alt={user?.name} />
+          </div>
+          <div>
+            <span>Logged in as: {user?.name}</span>
+          </div>
+          <div>
+            <button onClick={() => alert(user.accessToken)}>What is my access token?</button>
+          </div>
+          <div>
+            <button onClick={openAdminPortal}>Settings</button> {/* <-- settings button */}
+          </div>
+          <div>
+            <button onClick={logout}>Click to logout</button>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <button onClick={loginWithRedirect}>Click me to login</button>
+        </div>
+      )}
     </div>
   );
 }
