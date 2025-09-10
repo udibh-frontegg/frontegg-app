@@ -1,50 +1,44 @@
-import React, { useEffect } from "react";
-import { useAuth, useLoginWithRedirect, ContextHolder, AdminPortal } from "@frontegg/react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@frontegg/react";
 
-function App() {
+function App({ handleSwitchTenant }) {
   const { user, isAuthenticated } = useAuth();
-  const loginWithRedirect = useLoginWithRedirect();
+  const [selectedTenant, setSelectedTenant] = useState("");
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      loginWithRedirect();
+    if (isAuthenticated && user?.tenantId) {
+      setSelectedTenant(user.tenantId);
     }
-  }, [isAuthenticated, loginWithRedirect]);
+  }, [isAuthenticated, user]);
 
-  const logout = () => {
-    const baseUrl = ContextHolder.getContext().baseUrl;
-    window.location.href = `${baseUrl}/oauth/logout?post_logout_redirect_uri=${window.location.href}`;
-  };
-
-  const openAdminPortal = () => {
-    AdminPortal.show(); // opens the admin portal modal
-  };
+  if (!isAuthenticated) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="App">
-      {isAuthenticated ? (
-        <div>
-          <div>
-            <img src={user?.profilePictureUrl} alt={user?.name} />
-          </div>
-          <div>
-            <span>Logged in as: {user?.name}</span>
-          </div>
-          <div>
-            <button onClick={() => alert(user.accessToken)}>What is my access token?</button>
-          </div>
-          <div>
-            <button onClick={openAdminPortal}>Settings</button> {/* <-- settings button */}
-          </div>
-          <div>
-            <button onClick={logout}>Click to logout</button>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <button onClick={loginWithRedirect}>Click me to login</button>
-        </div>
-      )}
+    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h2>Welcome, {user?.name || "User"}</h2>
+
+      <div style={{ marginTop: "10px" }}>
+        <label htmlFor="tenant-select" style={{ marginRight: "10px" }}>
+          Select Active Tenant:
+        </label>
+        <select
+          id="tenant-select"
+          value={selectedTenant}
+          onChange={(e) => {
+            const tenantId = e.target.value;
+            setSelectedTenant(tenantId);
+            handleSwitchTenant(tenantId);
+          }}
+        >
+          {user?.tenantIds?.map((tenantId) => (
+            <option key={tenantId} value={tenantId}>
+              {tenantId}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
